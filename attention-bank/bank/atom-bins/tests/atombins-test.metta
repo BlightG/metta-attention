@@ -58,7 +58,7 @@
 ;################################### Testing ###################################
 
 ; Test case 01: Tesing that the getRandomAtom function returns one result
-;! (let $res (collapse (getRandomAtom)) (assertEqual (size-atom $res) 1))
+! (let $res (collapse (getRandomAtom)) (assertEqual (size-atom $res) 1))
 
 ; Test case 02: Testing getContentIf function using pred as a predicate function
 !(assertEqual (getContentIf 1 pred 0 10 (collapseAtomBin &atombin) ()) (a))
@@ -86,21 +86,21 @@
 
 
 ;: Test case 08: Testing remove_atom_helper can remove an atom or expression from a list of atoms and expressions
-;!(assertEqual (removehelp G (E  H Y G J K L)) (L K J Y H E))
-;!(assertEqual (removehelp G (J K L)) (L K J)) ; remove atom that is not present
-;!(assertEqual (removehelp G ()) ()) ; remove from empty list
-;!(assertEqual (removehelp G (L K J (Hebbianlink Human Dog))) ((Hebbianlink Human Dog) J K L)) ; remove atom from list containing expression
-;!(assertEqual (removehelp (Hebbianlink Human Dog) ((Hebbianlink Human Dog) G J K L)) (L K J G)) ; remove expression from list containing expression
+!(assertEqual (removehelp G (E  H Y G J K L)) (L K J Y H E))
+!(assertEqual (removehelp G (J K L)) (L K J)) ; remove atom that is not present
+!(assertEqual (removehelp G ()) ()) ; remove from empty list
+!(assertEqual (removehelp G (L K J (Hebbianlink Human Dog))) ((Hebbianlink Human Dog) J K L)) ; remove atom from list containing expression
+!(assertEqual (removehelp (Hebbianlink Human Dog) ((Hebbianlink Human Dog) G J K L)) (L K J G)) ; remove expression from list containing expression
 
 ; Test case 09: Testing removeAtom can remove an Atom from an index in the atomBin
 
-;!(assertEqual (removeAtom 29 c) ("Bin is empty"))
-;!(assertEqual (removeAtom 1 a) ("Atom Removed"))
-;!(assertEqual (match &atombin  (1 $x) $x) ((Hebbianlink Human Cat) Cat))
-;!(assertEqual (removeAtom 1 (Hebbianlink Human Dog)) ("Atom Removed"))
+!(assertEqual (removeAtom 29 c) ("Bin is empty"))
+!(assertEqual (removeAtom 1 a) ("Atom Removed"))
+!(assertEqual (match &atombin  (1 $x) $x) ((Hebbianlink Human Cat) Cat))
+!(assertEqual (removeAtom 1 (Hebbianlink Human Dog)) ("Atom Removed"))
 
 ; Test case 10: Testing removeAtom to remove an atom not present in the specified index
-;!(assertEqual (removeAtom  45 L) ("Atom is not valid"))
+!(assertEqual (removeAtom  45 L) ("Atom is not valid"))
 
 ; Test case 06: Testing intertAtom with an Expression
 !(setAv (Hebbianlink Human Dog) (200 200 0))
