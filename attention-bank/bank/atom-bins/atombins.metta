@@ -38,20 +38,17 @@
                (add-atom &atombin ($bin_index ($pattern))) ; Insert new bin
                ("Atom Inserted")
            )
-           (match &atombin ($bin_index $x)
-               (if (== (contains $x $pattern) True)  ; Check for duplicates
-                   ("Atom already exists")  ; Do not insert duplicate
-                   (let* (
-                        ($atomremove (remove-atom &atombin ($bin_index $x)))  ; Remove old bin
-                        ($updated (cons-atom $pattern $x))  ; Add new atom
-                        ($atomadded (add-atom &atombin ($bin_index $updated))) ; Update bin
-                    )
-                    ("Atom Inserted")
-                   )
-               )
+           (let * (
+               ($oldbin (collapse (match &atombin ($oldbin $pattern) $oldbin)))
+               ($remove (remove-atom &atombin ($oldbin $pattern)))
+               ($new (add-atom &atombin ($bin_index ($pattern))))
            )
+           ("Atom Inserted")   
+            )  
+         ) 
    )
-)
+
+
 
 
 ;Function: removeAtom
