@@ -35,13 +35,15 @@
                             ($count (size-atom $needToBeTarget ))
                             ($_ (collapse (addHebbian (superpose $needToBeSource) $source )))
                             ($__ (collapse (addHebbian $source (superpose $needToBeTarget))))
-                            ($farLinks (/ $count localToFarLinks )) ;round by default
+                            ($maxLinkNum getAttentionParam MAX_LINK_NUM)
+                            ($localToFarLinks getAttentionParam LOCAL_FAR_LINK_RATIO )
+                            ($farLinks (/ $count $localToFarLinks )) ;round by default
                             ($___ (addFromOutSideAF $source $farLinks))
                             ($incomingSet (getIncomingSetByType $source HEBBIAN_LINK)) ;should I add other types of hebbian links?
                         )
                         (
-                            (if (> (size-atom $incomingSet) maxLinkNum )
-                                (removeLinkRecursively (- (size-atom $incomingSet) maxLinkNum))
+                            (if (> (size-atom $incomingSet) $maxLinkNum )
+                                (removeLinkRecursively (- (size-atom $incomingSet) $maxLinkNum))
                                 ()
                             )
                             (add-atom $space2 $source)
