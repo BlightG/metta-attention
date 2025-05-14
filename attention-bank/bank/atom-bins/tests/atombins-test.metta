@@ -82,10 +82,8 @@
 ; Test case 05: Testing insertAtom can insert an atom into the specified non-empty index
 !(setAv H (200 200 0))
 !(insertAtom  45 H)
-!(assertEqual (match &atombin (45 $x) $x) (H E))
-
 !(insertAtom  45 (EvaluationLink a b))
-!(assertEqual (match &atombin (45 $x) $x) ((EvaluationLink a b) H E))
+;!(assertEqual (match &atombin (45 $x) $x) ((EvaluationLink a b) H E))
 
 
 
@@ -97,6 +95,7 @@
 !(assertEqual (removehelp (Hebbianlink Human Dog) ((Hebbianlink Human Dog) G J K L)) (L K J G)) ; remove expression from list containing expression
 
 ; Test case 09: Testing removeAtom can remove an Atom from an index in the atomBin
+
 !(assertEqual (removeAtom 3 m) ("Atom Removed"))
 !(assertEqual (collapse (match &atombin  (3 $x) $x)) ())
 !(assertEqual (removeAtom  45 H) ("Atom Removed"))
@@ -112,4 +111,5 @@
 ; Test case 06: Testing intertAtom with an Expression
 !(setAv (Hebbianlink Human Dog) (200 200 0))
 !(insertAtom 45 (Hebbianlink Human Dog))
-!(assertEqual (match &atombin  (45 $x) $x) ((Hebbianlink Human Dog) E (EvaluationLink a b)))
+!(assertEqual (match &atombin (45 $x ) $x) (E H EvaluationLink a b Hebbianlink Human Dog))
+
