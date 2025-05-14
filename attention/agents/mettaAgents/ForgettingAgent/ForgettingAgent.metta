@@ -19,13 +19,15 @@
 		(
 			($count 0)
 			($atoms (collapseBin $space))
-			($size (size-atom $atoms)) 
-			($removalAmount (- $size (- (maxSize) (accDivSize))))
+			($size (size-atom $atoms))
+			($accDivSize (getAttentionParam  ACC_DIV_SIZE))
+			($maxSize  (getAttentionParam  MAX_Size))
+			($removalAmount (- $size (- ($maxSize) ($accDivSize))))
 			($filteredatom (filterByLti $atoms))
 			($sortedatoms (ForgettingLTIThenTVAscendingSort $filteredatom))
 				
 		)
-		(if (< $size (+ (maxSize) (accDivSize)))
+		(if (< $size (+ ($maxSize) ($accDivSize)))
 			()
 			(checkThenRemoveAtom $sortedatoms $removalAmount $count)
 		)
