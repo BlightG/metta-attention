@@ -27,6 +27,10 @@
 !(add-atom &attentionParam  (fundsLTI 100000))
 !(add-atom &attentionParam  (STIAtomWage 10))
 !(add-atom &attentionParam  (LTIAtomWage 10))
+!(add-atom &attentionParam  (tcDecayRate 0.1))
+!(add-atom &attentionParam  (DEFAULT_K 800))
+!(add-atom &attentionParam  (MAX_LinkNum 300))
+
 !(add-atom &attentionParam  (SPREADING_FILTER  (MemberLink (Type "MemberLink"))))
 (: getAttentionParam (-> Symbol Number))
 (= (getAttentionParam $param)
