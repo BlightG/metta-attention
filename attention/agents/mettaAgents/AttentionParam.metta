@@ -14,20 +14,20 @@
 !(add-atom &attentionParam  (StartingAtomStiRent 1.0))
 !(add-atom &attentionParam  (StartingAtomLtiRent 1.0))
 !(add-atom &attentionParam  (TargetStiFunds  10000.0))
-!(add-atom &attentionParam  (targetSTI 10000))
+!(add-atom &attentionParam  (TargetSTI 10000))
 !(add-atom &attentionParam  (TargetLtiFunds  10000.0))
-!(add-atom &attentionParam  (targetLTI 10000))
+!(add-atom &attentionParam  (TargetLTI 10000))
 !(add-atom &attentionParam  (StiFundsBuffer  10000.0))
 !(add-atom &attentionParam  (LtiFundsBuffer  10000.0))
 !(add-atom &attentionParam  (TARGET_LTI_FUNDS_BUFFER  10000.0))
 !(add-atom &attentionParam  (RENT_TOURNAMENT_SIZE  5.0))
-!(add-atom &attentionParam  (startingFundsSTI 100000))
-!(add-atom &attentionParam  (startingFundsLTI 100000))
-!(add-atom &attentionParam  (fundsSTI 100000))
-!(add-atom &attentionParam  (fundsLTI 100000))
+!(add-atom &attentionParam  (StartingFundsSTI 100000))
+!(add-atom &attentionParam  (StartingFundsLTI 100000))
+!(add-atom &attentionParam  (FundsSTI 100000))
+!(add-atom &attentionParam  (FundsLTI 100000))
 !(add-atom &attentionParam  (STIAtomWage 10))
 !(add-atom &attentionParam  (LTIAtomWage 10))
-!(add-atom &attentionParam  (tcDecayRate 0.1))
+!(add-atom &attentionParam  (TcDecayRate 0.1))
 !(add-atom &attentionParam  (DEFAULT_K 800))
 !(add-atom &attentionParam  (MAX_LinkNum 300))
 
@@ -36,7 +36,6 @@
 (= (getAttentionParam $param)
    (match &attentionParam ($param $x) $x)
 )
-
 
 (: updateAttentionParam (-> Symbol Number empty))
 (= (updateAttentionParam $param $newValue)
@@ -52,6 +51,21 @@
 (= (getAllAttentionParams)
    (get-atoms &attentionParam)
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -11,7 +11,6 @@
 !(import! &self metta-attention:attention:agents:mettaAgents:HebbianCreationAgent:HebbianCreationAgent)
 
 
-!(import! &self metta-attention:attention:agents:mettaAgents:AttentionParam)
 !(import! &self metta-attention:attention:agents:mettaAgents:Neighbors)
 !(import! &self metta-attention:experiments:runner-Def)
 

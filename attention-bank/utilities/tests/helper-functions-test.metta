@@ -3,6 +3,8 @@
 !(import! &self metta-attention:attention-bank:bank:atom-bins:atombins)
 !(import! &self metta-attention:attention-bank:bank:attentional-focus:attentional-focus)
 !(import! &self metta-attention:attention-bank:attention-value:getter-and-setter)
+!(import! &self metta-attention:attention:agents:mettaAgents:AttentionParam)
+
 
 !(assertEqual 
               (filter ((c)(a)(f h j k)(s c)(g j)(d)()) notEmpty) 

@@ -1,5 +1,5 @@
 !(bind! tcDecayRate 0.1)
-!(bind! DEFAULT_K 800)
+!(bind! dEFAULT_K 800)
 
 ;;; Function: HebbianUpdatingAgent-Run
 ;;; Description: Main Function to run the Hebbian Updating Agent.
@@ -127,12 +127,12 @@
                         (($mean1 $conf1) $stv1)
                         (($mean2 $conf2) $stv2)
                         ($cf (min-atom ($conf1 0.9999998)))
-                        ($count1 (/ (* DEFAULT_K $cf) (- 1.0 $cf)))
-                        ($count2 (/ (* DEFAULT_K $conf2) (- 1.0 $conf2)))
+                        ($count1 (/ (*  dEFAULT_K $cf) (- 1.0 $cf)))
+                        ($count2 (/ (* dEFAULT_K $conf2) (- 1.0 $conf2)))
                         ($CVAL 0.2)
                         ($count-new (- (+ $count1 $count2) (* $CVAL (min-atom ($count1 $count2)))))
                         ($mean-new (/ (+ (* $mean1 $count1) (* $mean2 $count2)) (+ $count1 $count2)))
-                        ($conf-new (/ $count-new (+ $count-new DEFAULT_K)))
+                        ($conf-new (/ $count-new (+ $count-new  dEFAULT_K)))
                     )
                         ($mean-new $conf-new)
                 )

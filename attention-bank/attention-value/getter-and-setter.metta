@@ -4,7 +4,7 @@
 ; and set the attention value to the pattern/node.
 ;
 ; i.e !(set_av A (399 400 1))
-
+( () (println! hi))
 (: setAv (-> Atom (Number Number Number) Atom))
 (= (setAv $pattern ($sti $lti $vlti))
     (let* (
@@ -32,8 +32,8 @@
           
            ($stiDiff (- $oldSTI $sti))
            ($ltiDiff (-  $oldLTI $lti))
-           ($fundsSTI (getAttentionBank fundsSTI))
-           ($fundsLTI (getAttentionBank fundsLTI))
+           ($fundsSTI (getAttentionParam FundsSTI))
+           ($fundsLTI (getAttentionParam FundsLTI))
            ($newstifund (+ $fundsSTI $stiDiff))
            ($newltifund (+ $fundsLTI $ltiDiff))
            ($updater (attentionValueChanged $pattern $newstifund $newltifund))  ; Update attentional focus and global paremeter
@@ -41,6 +41,7 @@
    ()
 )
 )
+( () (println! hi))
 
  ; getAv function accepts a pattern/node and returns the attention
  ; value attached to the pattern/node.
@@ -291,4 +292,11 @@
 (: getAtomsInTypeSpace (-> List))
 (= (getAtomsInTypeSpace) 
 	(collapse (getAtomsInTypeSpace-helper))
+)
+
+(= (countAtomsInTypeSpace)
+    (let $atoms
+        (getAtomsInTypeSpace)
+        (size-atom $atoms)
+    )
 )

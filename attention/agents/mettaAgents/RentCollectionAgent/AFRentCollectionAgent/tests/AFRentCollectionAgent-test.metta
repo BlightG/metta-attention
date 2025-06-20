@@ -29,11 +29,8 @@
 ;the sti value of the atoms must be lower and Python’s time.time() is only precise up to ~1e-6 or less,
 ;and sleep in MeTTa via Python is also not deterministic.that's why i used the approximation
 
-!(assertEqual (approxEqual (getSTI (Hebbianlink (Hebbianlink c d) (Hebbianlink c b))) 30.9 1.6) True)
+ !(assertEqual (approxEqual (getSTI (Hebbianlink (Hebbianlink c d) (Hebbianlink c b))) 30.9 1.6) True)
 !(assertEqual (approxEqual (getSTI b) 59998.7 1.6) True)
 !(assertEqual (approxEqual (getSTI c) 29998.7 1.6) True)
 !(assertEqual (approxEqual (getSTI d) 2898.71 1.6) True)
 !(assertEqual (approxEqual (getSTI (Hebbianlink a b)) 353.725 1.6) True)
-
-
-
