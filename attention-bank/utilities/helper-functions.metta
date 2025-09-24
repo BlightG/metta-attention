@@ -1,3 +1,4 @@
+
 (= (filter $array $func)
    (if (== $array ())
        () 
@@ -20,7 +21,7 @@
 
 (: customFilter (-> Expression (-> Symbol Number Number Bool) Number Number Expression))
 (= (customFilter $list $predicate $lower $upper)
-  (if (== $list ())
+  (if(== $list ())
     ()
     (let*
       (
@@ -62,29 +63,9 @@
        )
    )
 )
-;TODO: Figure out why when types are added to this function, It returns []
-;(: valuesAtIndex (-> Number $list_t $list_t))
-(= (valuesAtIndex $i $handleSetSeq)
-   (if (== $handleSetSeq ())
-     ()
-    (let $seq (collapse (let ($index $val) (superpose $handleSetSeq)
-        (if (== $i $index)
-            $val
-            (empty)
-        )
-     
-        )
-        )
-        (if (== $seq ())
-            ()
-            (car-atom $seq)
-        )
-    )
-   )
-)
 
 
-
+ 
 ; Recursive helper to calculate the group index
 (= (findGroup $imp $sum $i)
    (if ( <= $imp 0)
@@ -92,8 +73,8 @@
     (
         let* (
             ($num (+ $imp 1))
-            ($log_num (log' 2 $num))
-            ($int_num (+ (floor-math $log_num) 1))
+            ($log_num (log-math 2 $num))
+            ($int_num (ceil-math $log_num))
             
         )
         
@@ -108,8 +89,8 @@
 ;a function to find the ceil
 (: ceil (-> Number Number))
 (= (ceil $x)
-   (let $int_part (trunc' $x)
-      (if (== $x $int_part)
+   (let $int_part (trunc-math $x)
+      (if(== $x $int_part)
          $int_part ; $x is already an integer
          (+ $int_part 1)
       )
@@ -190,8 +171,28 @@
                ($smaller (filterLess $pivot $rest)) ; Elements smaller than pivot
                ($greater (filterGreaterEqual $pivot $rest)) ; Elements greater or equal to pivot
                ($greaterRemaining (sort $greater))
+               ($x (sort $smaller))
+               ($y (cons-atom $pivot $greaterRemaining))
            )
-           (union-atom (sort $smaller) (cons-atom $pivot $greaterRemaining)  ) ; Recursively sort and combine
+           (union-atom $x $y) ; Recursively sort and combine
+       )
+   )
+)
+
+(= (sortDecend $list)
+   (if (== $list ())
+       () ; Base case: empty list is already sorted
+       (let*
+           (
+               ($pivot (car-atom $list)) ; Split into pivot and rest
+               ($rest (cdr-atom $list))
+               ($smaller (filterLess $pivot $rest)) ; Elements smaller than pivot 2 7 3 3
+               ($greater (filterGreaterEqual $pivot $rest)) ; Elements greater or equal to pivot 9 7 3
+               ($greaterRemaining (sortDecend $greater))
+               ($x (sortDecend $smaller))
+               ($y (cons-atom $pivot $x))
+           )
+           (union-atom $greaterRemaining $y) ; Recursively sort and combine
        )
    )
 )
@@ -239,7 +240,7 @@
 ; Define approximate equality
 (: approxEqual (-> Number Number Number Bool))
 (= (approxEqual $a $b $tol)
-    (or (== (abs (- $a $b)) $tol) (< (abs (- $a $b)) $tol))
+    (<= (abs (- $a $b)) $tol)
 )
 
 (: extractAndFlatten (-> Expression Expression))
@@ -262,7 +263,7 @@
 
 (: collectContents (-> Expression Expression Expression))
 (= (collectContents $list $acc)
-   (if (== $list ())
+   (if(== $list ())
     $acc
     (let*
       (
@@ -277,35 +278,35 @@
 
 ;function to reverse an expression 
 
-(= (reverseExpr $x ) (collapse (union (superpose $x) (superpose ())))) 
-
+(= (reverseExpr $x ) (collapse (union (superpose $x) (superpose ()))))
 ; Description: the function takes a list of atoms and experessions 
 ;              and returns a new list wich contatins only symobls
 ; params:
-;		$atoms: list of symbols and expressions
+;    $atoms: list of symbols and expressions
 ; return: list of symbols
 (: removeLinksfromList (-> List List))
 (= (removeLinksfromList $atoms)
-	(if (== $atoms ())
-		()
-		(let* 
-			(
-				($head (car-atom $atoms))
-				($tail (cdr-atom $atoms))
-			)
-			(if (== (get-metatype $head) Symbol)
-				(concatTuple ($head) (removeLinksfromList $tail))	
-				(removeLinksfromList $tail)
-			)
-		)
-	)
+  (if (== $atoms ())
+    ()
+    (let* 
+      (
+        ($head (car-atom $atoms))
+        ($tail (cdr-atom $atoms))
+      )
+      (if (== (get-metatype $head) Symbol)
+        (concatTuple ($head) (removeLinksfromList $tail))  
+        (removeLinksfromList $tail)
+      )
+    )
+  )
 )
 
 
 (= (getStiHelper $atoms)
-    (let $vals 
-        (superpose $atoms)
-        (getSti $vals)
+    (let* (
+        ($vals (getSti (superpose $atoms)))
+    )
+    $vals
     )
 )
 
@@ -355,61 +356,34 @@
     )
 )
 
-(= (log' $x $y)
-    (if (<= $y 0)
-        (empty)
-        (let*
-            (
-                ($y-low -1000)
-                ($y-high 1000)
-                ($epsilon 0.000000000001)
-                ($max-iter 1000)
-                ($iter 0)
-            )
-            (log-loop $x $y $y-low $y-high $epsilon $max-iter $iter)
-        )
-    )
+(= (sortAtomsDescending $atoms) 
+    (if (== $atoms ())
+		()
+		(let*
+			(
+				($pivot (car-atom $atoms))
+				($tail (cdr-atom $atoms))
+				($lesser (binaryFilter lessThanSti  $pivot $tail))
+				($greater (binaryFilter greaterThanSti  $pivot $tail))
+                ($sortedLesser (sortAtomsDescending $lesser))
+                ($sortedGreater (sortAtomsDescending $greater))
+			)	
+           (concatTuple $sortedGreater (cons-atom $pivot $sortedLesser))
+		)
+	)
+
 )
 
-(= (log-loop $x $y $y-low $y-high $epsilon $max-iter $iter)
-    (if (or (> $iter $max-iter) (== $iter $max-iter))
-        (/ (+ $y-low $y-high) 2)
-        (let* 
-            (
-                ($y-mid (/ (+ $y-low $y-high) 2))
-                ($e-mid (pow-math $x $y-mid))
-                ($new-iter (+ 1 $iter))
-            )
-            (if (< (abs-math (- $e-mid $y)) $epsilon)
-                $y-mid
-                (if (> $e-mid $y)
-                    (log-loop $x $y $y-low $y-mid $epsilon $max-iter $new-iter)
-                    (log-loop $x $y $y-mid $y-high $epsilon $max-iter $new-iter)
-                )
-            )
-        )           
-    )
+(= (lessThanSti $elem $pivot)
+    (if (or (== $elem ()) (== $pivot ()))
+		False
+	    (<= (getSti $elem) (getSti $pivot))
+    )   
 )
 
-(= (trunc' $x)
-    (let $floor (floor-math $x)
-        (if (< $x 0)
-            (if (== $floor $x)
-                $floor
-                (+ $floor 1)
-            )
-            $floor 
-        )
-    )
-)
-
-(= (ceil' $x)
-    (
-        let* (
-            ($floor (floor-math $x))
-            ($isEqual (== $x $floor))
-            ($ans (if $isEqual $floor (+ $floor 1))
-        ))
-        $ans
-    )
+(= (greaterThanSti $elem $pivot)
+    (if (or (== $elem ()) (== $pivot ()))
+		False
+	    (> (getSti $elem) (getSti $pivot))
+    )   
 )

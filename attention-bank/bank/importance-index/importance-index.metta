@@ -2,9 +2,7 @@
 
 ; functions like the following
 
-
 ; - importanceBin - it recives importance value(sti value) and return bin value
-; - updateImportance - it recives atom, old and new sti value and updates its bin location or update its position
 ; - update - update the global variables max sti and min sti value
 ; - getmaxsti - return the max sti value
 ; - getminsti - return the min sti value
@@ -12,7 +10,6 @@
 ; - getMaxBinContents - return atoms found in max bin index
 ; - getMinBinContents - return atoms found in min bin index
 ; - bin_size - return the total bin size
-; - size - it recives atom bin index and return the size or total number of atoms found inside that bin index
 
 (: GroupSize Number)
 (= (GroupSize) 8)
@@ -40,7 +37,7 @@
     let*
     (
       ($groupSize (GroupSize))
-      ($impo_int (trunc' $impo)) ; Ensure $impo is treated as an integer
+      ($impo_int (trunc-math $impo)) ; Ensure $impo is treated as an integer
       ($firstCondition (< $impo_int 0))
       ($secondCondition (< $impo_int (* 2 $groupSize)))
     )
@@ -50,10 +47,10 @@
         $impo_int
         (let*
           (
-            ($imp (trunc' (/ (- $impo_int $groupSize) $groupSize)))
+            ($imp (trunc-math (/ (- $impo_int $groupSize) $groupSize)))
             ($i (findGroup $imp 0 0))
             ($num (- $i 1))
-            ($temp (ceil' (/ $impo_int (pow-math 2 (- $i 1)))))
+            ($temp (ceil-math (/ $impo_int (pow-math 2 (- $i 1)))))
             ($ad (- $groupSize $temp))
             ($bin (- (* $i $groupSize) $ad))
           )
@@ -71,9 +68,9 @@
 ; use by other methods or functions that need them
 ; the space that will be passed is the space that the atoms are stored in
 ;
-; i.e (update &atombin) will update the global variables _minSTI and _maxSTI
+; i.e (update &typeSpace) will update the global variables _minSTI and _maxSTI
 
-;get all contents that are in atombin indices
+;get all contents that are in typeSpace indices
 ;filter out empty contents
 ;find maximum sti
 ;find minumum sti
@@ -83,7 +80,7 @@
 (: update (-> hyperon::space::DynSpace Atom))
 (= (update $space)
     (let* (
-            ($collectedContents (getAllAtomsInBins))
+            ($collectedContents (getAllAtomsWithBins))
             ($max (getAllMaxSTI $collectedContents))
             ($min (getAllMinSTI $collectedContents))
             ($exitCondition (> $min $max))
@@ -102,67 +99,32 @@
        ($firstRes (updateMin $min))
        ($secondRes (updateMax $max))
       )
-      ("Updated")
+      (trace! (updated) ("Updated"))
+
      )
 )
 
-;####################### updateImportance ##################################
 
-; the updateImportance function receives atom, old and new sti value and updates 
-; its bin location or update its position according to the new sti
-;
-; i.e (updateImportance a 1 100) output: "Importance Updated"
-;
-; What this does is remove the a atom from the 1st bin index and add it to the index
-; that the STI 100 belongs to.
 
-(: updateImportance (-> hyperon::space::DynSpace Atom Number Number Atom))
-(= (updateImportance $space $atom $oldSTI $newSTI)
-    (let* 
-        (
-            ($oldBin (importanceBin $oldSTI))
-            ($newBin (importanceBin $newSTI))
-            ($relocate 
-                (let $result 
-                    (relocateAtom $oldBin $newBin $atom)
-                    (if $result ("Importance Updated") ("Importance Not Updated")))
+; Filters atoms in expression whose STI values fall between lower and higher bounds.
+(: filterContents (-> Expression Number Number Expression))
+(= (filterContents $contents $lower $higher)
+   (if (== $contents ())
+        () 
+        (collapse 
+          (let* (($x (superpose $contents)))
+            (if (and (>=  (getSti $x) $lower) (<= (getSti $x) $higher)) 
+                 $x
+                () 
             )
+          ) 
         )
-        $relocate
-    )
-)
-
-
-(: relocateAtom (-> Number Number Symbol Bool))
-(= (relocateAtom $oldBin $newBin $atom)
-   (let* (($res1 (removeAtom $oldBin $atom))
-         ($res2 (insertAtom $newBin $atom)))
-     (if (or (== $res1 ("Atom already exists")) (== $res1 ("Bin is empty")))
-       False
-       (== (collapse (index-atom $res2 0)) ("Atom Inserted"))
-      )
    )
-    
+     
+
 )
 
-(: pred (-> Symbol Number Number Bool))
-(= (pred $x $lower $higher)
-	(let $sti (getSti $x) 
-      (and 
-        (or (>  $sti $lower) (and (<= $sti $lower) (not (< $sti $lower))))
-        (or (<  $sti $higher) (and (<= $sti $higher) (not (< $sti $higher))))
-      )
-  )
-)
-
-(: loop (-> Number Number $list_t $list_t $list_t))
-(= (loop $i $term $atomBins $acc)
-   (if (== $i $term)
-      $acc
-      (let $next (+ 1 $i) (loop $next $term $atomBins (getContent $i $atomBins $acc)))
-    )
-)
-
+; Retrieves atoms from bins whose STI values fallin lowerbound and upperBound. it utilizes filterContents function.
 (: getHandleSet (-> Number Number Expression))
 (= (getHandleSet $lowerBound $upperBound)
    (if (or (< $lowerBound 0) (< $upperBound 0))
@@ -171,14 +133,13 @@
        (
         ($lowerBin (importanceBin $lowerBound))
         ($upperBin (importanceBin $upperBound))
-        ($atomBins (collapseAtomBin (atomBin)))
-        ($gcIfRes (getContentIf $lowerBin pred $lowerBound $upperBound $atomBins ())) ;gcIfRes - getContentIfResult (result obtained after calling getContentIf)
-        ($exitCondition (== $upperBin $lowerBin))
-        ($gcRes (loop $lowerBin $upperBin $atomBins $gcIfRes)) ;gcRes - getContentResult (result obtained after calling getContent)
-        ($res (getContentIf $upperBin pred $lowerBound $upperBound $atomBins $gcRes))
-        ($finalResult (if $exitCondition (removeDuplicates $gcIfRes) (removeDuplicates $res))) ;remove duplicates because the result needs to be a set of atoms.
+        ($allContents (getContent $lowerBin $upperBin))
+        ($filteredContents  (filterContents $allContents $lowerBound $upperBound))
+        ($finalContents  (filter $filteredContents notEmpty))
+        
       )
-       $finalResult
+     $finalContents 
+        
     )
   )
 )
@@ -187,28 +148,50 @@
 (= (getMaxSTI $avg) 
    (let $recentVal (RecentVal)
     (if $avg
-      (match $recentVal (recent_max $x) $x)
-      (match $recentVal (value_max $x) $x)
+      (match $recentVal (recent_max $_) $_)
+      (match $recentVal (value_max $_) $_)
       )
    )
 )
 
 (: getMaxSTI (-> Number))
-(= (getMaxSTI) (let $recentVal (RecentVal) (match $recentVal (recent_max $x) $x)))
+(= (getMaxSTI) (let $recentVal (RecentVal) (match $recentVal (recent_max $_) $_)))
 
 (: getMinSTI (-> Bool Number))
 (= (getMinSTI $avg)
    (let $recentVal (RecentVal)
     (if $avg
-      (match $recentVal (recent_min $x) $x)
-      (match $recentVal (value_min $x) $x)
+      (match $recentVal (recent_min $_) $_)
+      (match $recentVal (value_min $_) $_)
       )
    )
 )
 
 (: getMinSTI (-> Number))
-(= (getMinSTI) (let $recentVal (RecentVal) (match $recentVal (recent_min $x) $x)))
+(= (getMinSTI) (let $recentVal (RecentVal) (match $recentVal (recent_min $_) $_)))
 
+; (: getMaxSTI (-> Bool Number))
+; (= (getMaxSTI $avg) 
+
+;     (if $avg
+;       (getAttentionParam RECENT_MAX)
+;       (getMaxSTI)
+;       )
+; )
+
+; (: getMaxSTI (-> Number))
+; (= (getMaxSTI) (getAttentionParam MAX_STI))
+
+; (: getMinSTI (-> Bool Number))
+; (= (getMinSTI $avg)
+;    (if $avg
+;       (getAttentionParam RECENT_MIN)
+;       (getMinSTI)
+;       )
+; )
+
+; (: getMinSTI (-> Number))
+; (= (getMinSTI) (getAttentionParam MIN_STI))
 
 ;Function: getNormalisedZeroToOneSTI
 ;Description: Normalizes an atom's STI based on the minimum and maximum STI values.
@@ -229,7 +212,7 @@
            ($normaliser (- $maxSTI $minSTI))
            ($diff (- $sti $minSTI))
           
-           ($value (if (is $normaliser 0)
+           ($value (if (== $normaliser 0)
                       0.0
                       (/ $diff $normaliser)))
             ($minim  (min-atom ($value 1.0)))
@@ -255,7 +238,7 @@
 (= (getNormalisedSTI $atom)
    (let*
        (
-          ($atoms (getAtomList))
+          ($atoms (getAfAtoms))
            ($s (getSti $atom))
            ($afMax  (getAllMaxSTI $atoms))
            ($normaliser
@@ -287,7 +270,7 @@
 (= (getNormalisedSTI $atom $average $clip)
    (let*
        (
-           ($atoms (getAtomList))
+           ($atoms (getAfAtoms))
            ($s (getSti $atom))
            ($afMax  (getAllMaxSTI $atoms))
            ($diff (- $s $afMax))

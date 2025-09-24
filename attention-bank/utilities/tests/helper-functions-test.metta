@@ -1,6 +1,5 @@
 !(register-module! ../../../../metta-attention)
 !(import! &self metta-attention:attention-bank:utilities:helper-functions)
-!(import! &self metta-attention:attention-bank:bank:atom-bins:atombins)
 !(import! &self metta-attention:attention-bank:bank:attentional-focus:attentional-focus)
 !(import! &self metta-attention:attention-bank:attention-value:getter-and-setter)
 !(import! &self metta-attention:attention-bank:bank:importance-index:importance-index)
@@ -21,8 +20,6 @@
 ;! (assertEqual (Min (34 22 1 17 18 107)) 1)
 ;! (assertEqual (Min (1 2 3 17 18 37)) 1)
 
-!(assertEqual (valuesAtIndex 37 ((3 (c)) (1 (a)) (37 (f h j k)) (17 (s c)) (18 (g j)) (2 (d)))) (f h j k))
-!(assertEqual (valuesAtIndex 17 ((3 (c)) (1 (a)) (37 (f h j k)) (17 (s c)) (18 (g j)) (2 (d)))) (s c))
 
 !(assertEqual (removeDuplicates (a a d c)) (c d a))
 !(assertEqual (removeDuplicates (a a)) (a))
@@ -39,7 +36,3 @@
 !(assertEqual (findGroup 50 0 0) 6)
 !(assertEqual (findGroup 500 0 0) 9)
 !(assertEqual (findGroup 5000 0 0) 12)
-
-
-
-

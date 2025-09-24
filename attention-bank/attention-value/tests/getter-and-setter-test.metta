@@ -1,7 +1,6 @@
 !(register-module! ../../../../metta-attention)
 !(import! &self metta-attention:attention:AttentionParam)
 !(import! &self metta-attention:attention-bank:attention-value:getter-and-setter)
-!(import! &self metta-attention:attention-bank:bank:atom-bins:atombins)
 !(import! &self metta-attention:attention-bank:bank:attentional-focus:attentional-focus)
 !(import! &self metta-attention:attention-bank:bank:importance-index:importance-index)
 !(import! &self metta-attention:attention-bank:utilities:helper-functions)
@@ -19,8 +18,7 @@
 !(setAv Human (400 400 1))
 !(assertEqual (getAttentionParam FUNDS_STI) 98400)
 !(assertEqual (getAttentionParam FUNDS_LTI) 98400)
-!(assertEqual (getAtomsInBins) ((53.0 (Human Animal Cat A))))
-!(assertEqual (getAtomList) (A Cat Animal Human))
+
 ; Test case 02: testing attention value getter(getAv) function for symbol atom type
 
 ! (assertEqual (getAv A) (AV 400 400 0)) ; getting attention value for symbol A
@@ -36,7 +34,9 @@
 ! (setAv (a) (397 400 1))
 ! (setAv (C) (400 400 1))
 ! (setAv (EvaluationLink a b) (300 200 0))
+! (setAv (Hebbianlink a b) (300 200 0))
 ! (setAv (Hebbianlink Human Cat) (200 200 0))
+! (setAv (SimilarityLink Human Cat) (200 200 0))
 ! (setAv (Hebbianlink (Hebbianlink Human Cat) Animal) (300 200 0))
 ! (setAv (Hebbianlink (Hebbianlink Animal Human) (Hebbianlink Animal Cat)) (200 200 0))
 
@@ -104,9 +104,11 @@
 !(setSti k 200)
 !(setLti k 200)
 !(setVlti k 200)
-!(assertEqual(getAv k) (AV 200 200 200))
-!(assertEqual (getAttentionParam FUNDS_STI) 96403)
-!(assertEqual (getAttentionParam FUNDS_LTI) 96600)
+!(assertEqual (getAv k) (AV 200 200 200))
+
+!(assertEqual (getAttentionParam FUNDS_STI) 95903)
+!(assertEqual (getAttentionParam FUNDS_LTI) 96200)
+
 
 ; Test case 11: testing  functions globalIncomingSetByType and globalIncomingSetwithoutType
 !(assertEqual (globalIncomingSetByType a EvaluationLink)  ((EvaluationLink a b)))
