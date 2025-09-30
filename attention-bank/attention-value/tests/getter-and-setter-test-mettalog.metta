@@ -93,7 +93,7 @@
 ! (assertEqual (getStv (Hebbianlink (Hebbianlink Animal Human) (Hebbianlink Animal Cat))) (STV 0.1 0.9))
 
 
-; Test case 09: testing mean, confidence, STI, LTI and VLTI getter functions
+; Test case 09: testing mean, confidence, STI,LTIand VLTI getter functions
 
 ! (assertEqual (getMean A) 1)
 ! (assertEqual (getConfidence (EvaluationLink a b)) 0.9)

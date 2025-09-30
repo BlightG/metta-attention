@@ -3,7 +3,7 @@
 
 ; AFRentCollectionAgent - Handles rent collection for atoms in Attentional Focus (AF).
 ; The agent collects rent from atoms in AF based on elapsed time.
-; Rent is deducted from STI and LTI values, ensuring values do not go negative.
+; Rent is deducted from STI andLTIvalues, ensuring values do not go negative.
 !(bind! &timer (new-space))
 !(add-atom &timer (firstTime True))
 !(let $time (timeTime) (add-atom &timer  (lastUpdate  $time)))
@@ -17,7 +17,7 @@
 )
 
 ; Function: collectRent
-; Description: Deducts rent from STI and LTI of atoms in attentional focus.
+; Description: Deducts rent from STI andLTIof atoms in attentional focus.
 ;              Ensures rent is applied at a controlled frequency.
 ; Parameters:
 ;   - $targetSet: List of atoms in attentional focus.
@@ -57,7 +57,7 @@
 
 
 ; Function: applyRent
-; Description: Deducts STI and LTI rent from an atom, ensuring it does not go below zero.
+; Description: Deducts STI andLTIrent from an atom, ensuring it does not go below zero.
 ; Parameters:
 ;   - $atom: The atom undergoing rent collection.
 ;   - $w: Weight factor based on elapsed time.

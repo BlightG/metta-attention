@@ -92,13 +92,15 @@
 ;Returns: The result of updating the atomBin.
 
 
-(: attentionValueChanged (-> Atom Number Number Expression))
+(: attentionValueChanged (-> Atom Number Number empty))
 (= (attentionValueChanged $pattern $newSTIFund $newLTIFund)
-   (let*(
-         ($stiUpdated (updateAttentionParam FUNDS_STI $newSTIFund))
-         ($ltiUpdated (updateAttentionParam FUNDS_LTI $newLTIFund))
-         ($globalUpdate (update &typeSpace))
+   (let* (
+         ($one (updateAttentionParam FUNDS_STI $newSTIFund))
+         ($two (updateAttentionParam FUNDS_LTI $newLTIFund))
+         ($atombin (AtomBin))
+         ($r (update $atombin))
+         ($three (updateAttentionalFocus $pattern True))
         )
-        ()
+        $r
     )
 )

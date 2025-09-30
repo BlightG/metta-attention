@@ -8,7 +8,7 @@
 !(import! &self metta-attention:attention-bank:bank:importance-index:importance-index)
 
 !(updateAttentionParam FORGET_THRESHOLD 5)
-; stimualte 0.25 translated to lti 5
+; stimualte 0.25 translated toLTI5
 
 !(stimulate a 1)
 !(stimulate b 0.4)
@@ -77,7 +77,7 @@
 ; stv &av, lit < 5, source < 5, target < 5
 !(stimulate (SYMMETRIC_HEBBIAN_LINK K L) 0.1)
 
-; stv &av, lit < 5, source < 5, target < 5, link lti above source & target lti
+; stv &av, lit < 5, source < 5, target < 5, linkLTIabove source & target lti
 !(stimulate (SYMMETRIC_HEBBIAN_LINK M N) 0.2)
 
 !(assertEqual (getAttentionParam FUNDS_STI) 99174.80000000002)

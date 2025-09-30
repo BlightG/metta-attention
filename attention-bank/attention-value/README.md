@@ -8,7 +8,7 @@ This module is used to set and retrive the AV, STV and bin values of an atom.
 
 The **AV** value is composed of three numbers and describing 
 - STI (Short term Importance)
-- LTI (Long term Importance)
+-LTI(Long term Importance)
 - VLTI (Very Long term Importance)
 
 This values are used to describe how important an atom is and how much resource
@@ -56,5 +56,5 @@ so we dont need to consider if it is within funds value.
 
 ## modified atom structure
 
-(atom (((STV mean conf) (AV sti lti vlti)) (Bin binNumber)))
+(atom (((STV mean conf) (AV stiLTIvlti)) (Bin binNumber)))
 we removed atombin space. now all information of an atom is stored in typespace.

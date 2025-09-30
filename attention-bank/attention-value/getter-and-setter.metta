@@ -3,14 +3,14 @@
     &typeSpace
 )
 
-; updated data structure (atom (((STV mean conf) (AV sti lti vlti)) (Bin bin)))
-; setAv function accepts a pattern (it could be a symbol or an expression) and attention values(contain STI, LTI and VLTI)
+; updated data structure (atom (((STV mean conf) (AV stiLTIvlti)) (Bin bin)))
+; setAv function accepts a pattern (it could be a symbol or an expression) and attention values(contain STI,LTIand VLTI)
 ; and set the attention value as a type for the pattern. 
 ; then the pattern will be stored with attention value type in a space called typespace.
 
 ; i.e !(setAv Animal (399 400 1))
 ; we can get the type of the symbol animal using the function getValueType an it returns (AV 399 400 1).
-; which means the atom called Animal now has STI = 399, LTI = 400 and VLTI = 1
+; which means the atom called Animal now has STI = 399,LTI= 400 and VLTI = 1
 
 (: setAv (-> Atom (Number Number Number) Atom))
 (= (setAv $pattern ($sti $lti $vlti))
@@ -41,7 +41,11 @@
            ($newltifund (+ $fundsLTI $ltiDiff))
            ($updater (attentionValueChanged $pattern $newstifund $newltifund))  ; Update attentional focus and global paremeter
     )
-   ()
+   (
+     (() (updateAttentionParam FUNDS_STI $newstifund))
+     (() (updateAttentionParam FUNDS_LTI $newltifund))
+     (() (attentionValueChanged $pattern $newstifund $newltifund))
+   )
 ))
 
  ; set_stv function accepts a pattern/node with the truthvalues
@@ -191,8 +195,8 @@
     )
 )
 
-;;setLti fnction accepts a pattern/node with an Lti value to replace the original
-;;and set the Lti to the pattern/node.
+;;setLti fnction accepts a pattern/node with anLTIvalue to replace the original
+;;and set theLTIto the pattern/node.
 ; i.e !(setLti A 500)
 (: setLti (-> Atom Number Atom)) 
 (= (setLti $pattern $newLTI)

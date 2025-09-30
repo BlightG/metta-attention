@@ -14,7 +14,7 @@ The forgetting agent takes the following steps
 
 1. The agent takes all atoms from the Atombin Space
 2. It then filters all atoms that are below the **ForgetThreshold**
-3. The agent sorts in ascending orderd filtered atoms based on Lti values and
+3. The agent sorts in ascending orderd filtered atoms based onLTIvalues and
 uses mean value as a differentitation factor.
 4. For an atom to be removed (Forgotten) 
     1. It has to be below the thresold and

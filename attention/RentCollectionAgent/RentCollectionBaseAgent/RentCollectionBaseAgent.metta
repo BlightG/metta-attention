@@ -28,10 +28,10 @@
 )
 
 ; Function: calculateLtiRent
-; Description: Adjusts LTI rent based on the difference between target and current LTI funds.
+; Description: AdjustsLTIrent based on the difference between target and currentLTIfunds.
 ; Parameters:
-;   $LTIAtomRent - Base LTI rent value or scaled LTI rent value
-; Returns: Adjusted LTI rent.
+;   $LTIAtomRent - BaseLTIrent value or scaledLTIrent value
+; Returns: AdjustedLTIrent.
 (: calculateLtiRent (->Number  Number))
 (= (calculateLtiRent $LTIAtomRent)
    (let*

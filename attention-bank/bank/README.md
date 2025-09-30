@@ -14,7 +14,7 @@ Additionally the bank hold functions to control the disbursment of the STI and L
 ## Funds
 
 The funds are mainly stored in the FUNDS_STI and FUNDS_LTI variable 
-these values are the total amount of STI and LTI that can be in the system at one time.
+these values are the total amount of STI andLTIthat can be in the system at one time.
 
 The **TARGET_STI**, **TARGET_LTI**, **STI_FUNDS_BUFFER** and **LTI_FUNDS_BUFFER** are hyper parameters
 that control the rent collection and stimulation values.

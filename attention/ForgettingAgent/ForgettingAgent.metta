@@ -5,7 +5,7 @@
 	&removeSpace
 )
 
-; Description: a function to remove atoms that have low Lti values from the typeSpace
+; Description: a function to remove atoms that have lowLTIvalues from the typeSpace
 ; params:
 ;		None
 ; return: None
@@ -35,8 +35,8 @@
 ; params :
 ;	$atoms : List of atoms to be filtered
 ; return: List of atoms that are below threshold
-(: filterByLti (-> List List))
-(= (filterByLti $atoms)
+(: filterByLti (-> List Number List))
+(= (filterByLti $atoms $forgetThreshold)
 	(if (== $atoms ())
 		()
 		(let*
@@ -44,19 +44,19 @@
 				($head (car-atom $atoms))
 				($tail (cdr-atom $atoms))
 			)
-			(if (or (< (getLti $head) (forgetThreshold)) (== (getLti $head) (forgetThreshold)))
+			(if (<= (getLti $head) $forgetThreshold)
 				(if (== (getVlti $head) 0)
-					(concatTuple ($head) (filterByLti $tail))
-					(filterByLti $tail)
+					(concatTuple ($head) (filterByLti $tail $forgetThreshold))
+					(filterByLti $tail $forgetThreshold)
 				)
-				(filterByLti $tail)
+				(filterByLti $tail $forgetThreshold)
 			)
 		)
 	)
 )
 
-; Description: the function is responsible to sort a List of atmos based on thier Lti values
-;			   if the Lti are small it will make the descion based on the TruthValue (STV.mean)
+; Description: the function is responsible to sort a List of atmos based on thierLTIvalues
+;			   if theLTIare small it will make the descion based on the TruthValue (STV.mean)
 ;			   and sort them in descending order.
 ; params:
 ;       $atoms: a List of unsorted atoms
@@ -134,7 +134,7 @@
 	)
 )
 
-; Description: a function to check if the an an atom has an Lti lower than treshold
+; Description: a function to check if the an an atom has anLTIlower than treshold
 ;			   and we have not removed atoms above the calculated removal amount
 ; parmas:
 ; 		 $head: an atom to be checked
@@ -143,12 +143,14 @@
 ; return: True if atom can be removed else False
 (: atomBelowForgetThreshold (-> Atom Number Number Bool))
 (= (atomBelowForgetThreshold $head $removalAmount $count) 
-	(if (and (<= (getLti $head) (forgetThreshold)) (< $count $removalAmount))
+	(let ($threshold (getAttentionParam FORGET_THRESHOLD))
+	(if (and (<= (getLti $head) $threshold) (< $count $removalAmount))
 		(if (== (getVlti $head) 0 ) 
 			True
 			False
 		)
 		False
+	)
 	)
 )
 
@@ -161,9 +163,13 @@
 (= (globalRemoveAtom $head $niset) 
 	(let*
 		(
-            (() (refundAV $head))
+			($bin (importanceBin (getSti $head)))
+		)
+		(
+			(() (refundAV $head))
 			(() (add-atom &removeSpace (: $head ((STV 0.0 0.0) (AV 0.0 0.0 0.0)))))
 			(() (extractAtomRecursive $niset))
+			(() (removeAtomAttentionalfocus $head))
 			(() (removeTypeSpace $head))
 		)
 		()
@@ -183,8 +189,11 @@
 			(
 				($head (car-atom $atoms))
 				($tail (cdr-atom $atoms))
-                (() (refundAV $head))
+			)
+			(
+				(() (refundAV $head))
 				(() (add-atom &removeSpace (: $head ((STV 0.0 0.0) (AV 0.0 0.0 0.0)))))
+				(() (removeAtomAttentionalfocus $head))
 				(() (removeTypeSpace $head))
 			)
 			(extractAtomRecursive $tail)
@@ -192,7 +201,7 @@
 	)
 )
 
-; Description: a function that sets atoms STI and Lti to zero prior to removal to insure its funds are returned
+; Description: a function that sets atoms STI andLTIto zero prior to removal to insure its funds are returned
 ; params:
 ;   $atom: atom whose value is set to zero
 ; return: empty
@@ -264,9 +273,9 @@
 	)
 )
 
-; Description: retrive the Lti value of an atom in the removeSpace
+; Description: retrive theLTIvalue of an atom in the removeSpace
 ; params:
-; 	$pattern: atom whos Lti is to be retrieved
+; 	$pattern: atom whosLTIis to be retrieved
 ; return: Number value of describing the Lti
 (: getRemoveLti ( -> Atom Number))
 (= (getRemoveLti $pattern)

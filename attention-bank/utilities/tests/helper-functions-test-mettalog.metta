@@ -2,19 +2,29 @@
 !(import! &self attention-bank:utilities:helper-functions)
 !(import! &self attention-bank:bank:importance-index/importance-index)
 
-!(assertEqual (notEmpty (1 2 3 ())) (1 2 3))
 !(assertEqual 
               (filter ((c)(a)(f h j k)(s c)(g j)(d)()) notEmpty) 
-              ((c)(a)(f h j k)(s c)(g j)(d))
+              ((d) (g j) (s c) (f h j k) (a) (c))
 )
 
 !(assertEqual (filter (()()) notEmpty) ())
 
-!(assertEqual (removeDuplicates (a a d c)) (a d c))
+;!(assertEqual (size ((3 (c)) (1 (a)) (37 (f h j k)) (17 (s c)) (18 (g j)) (2 (d)))) 6)
+;!(assertEqual (size ()) 0)
+
+;! (assertEqual (Max (1 2 3 17 18 37)) 37)
+;! (assertEqual (Max (34 22 1 17 18 107)) 107)
+
+;! (assertEqual (Min (34 22 1 17 18 107)) 1)
+;! (assertEqual (Min (1 2 3 17 18 37)) 1)
+
+
+!(assertEqual (removeDuplicates (a a d c)) (c d a))
 !(assertEqual (removeDuplicates (a a)) (a))
-
-
 !(flatten ((s c) (G E) (a) (g) (f h j k) (d)))
+!(assertEqual(reverseExpr (a b c d)) (d c b a))
+!(assertEqual(reverseExpr ()) ())
+
 !(assertEqual (findGroup 0 0 0) 0)
 !(assertEqual (findGroup 1 0 0) 1)
 !(assertEqual (findGroup 2 0 0) 2)

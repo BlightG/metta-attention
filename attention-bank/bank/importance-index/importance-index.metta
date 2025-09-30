@@ -2,11 +2,11 @@
 
 ; functions like the following
 
-; - importanceBin - it recives importance value(sti value) and return bin value
-; - update - update the global variables max sti and min sti value
-; - getmaxsti - return the max sti value
-; - getminsti - return the min sti value
-; - getHandleSet - recive lower and uper bound of sti and return atoms in that bound
+; - importanceBin - it recives importance value(STI value) and return bin value
+; - update - update the global variables max STI and min STI value
+; - getmaxSTI - return the max STI value
+; - getminSTI - return the min STI value
+; - getHandleSet - recive lower and uper bound of STI and return atoms in that bound
 ; - getMaxBinContents - return atoms found in max bin index
 ; - getMinBinContents - return atoms found in min bin index
 ; - bin_size - return the total bin size
@@ -71,10 +71,10 @@
 
 ;get all contents that are in typeSpace indices
 ;filter out empty contents
-;find maximum sti
-;find minumum sti
-;if min_sti > max_sti: min_sti = max_sti
-;_min_sti = min_sti, max_sti = max_sti
+;find maximum STI
+;find minumum STI
+;if min_STI > max_STI: min_STI = max_STI
+;_min_STI = min_STI, max_STI = max_STI
 
 (: update (-> hyperon::space::DynSpace Atom))
 (= (update $space)
@@ -112,7 +112,7 @@
         () 
         (collapse 
           (let* (($x (superpose $contents)))
-            (if (and (>=  (getSti $x) $lower) (<= (getSti $x) $higher)) 
+            (if (and (>=  (getSTI $x) $lower) (<= (getSTI $x) $higher)) 
                  $x
                 () 
             )
@@ -205,11 +205,11 @@
 (: getNormalisedZeroToOneSTI (-> Atom Bool Bool Number))
 (= (getNormalisedZeroToOneSTI $atom $average $clip)
    (let*
-       (   ($sti  (getSti $atom))
+       (   ($STI  (getSTI $atom))
            ($maxSTI (getMaxSTI $average))
            ($minSTI (getMinSTI $average))
            ($normaliser (- $maxSTI $minSTI))
-           ($diff (- $sti $minSTI))
+           ($diff (- $STI $minSTI))
           
            ($value (if (is $normaliser 0)
                       0.0
@@ -238,7 +238,7 @@
    (let*
        (
           ($atoms (getAfAtoms))
-           ($s (getSti $atom))
+           ($s (getSTI $atom))
            ($afMax  (getAllMaxSTI $atoms))
            ($normaliser
                (if (> $s $afMax)
@@ -270,7 +270,7 @@
    (let*
        (
            ($atoms (getAfAtoms))
-           ($s (getSti $atom))
+           ($s (getSTI $atom))
            ($afMax  (getAllMaxSTI $atoms))
            ($diff (- $s $afMax))
            ($sum (+ $s $afMax)) 
