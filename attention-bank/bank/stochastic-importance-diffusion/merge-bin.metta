@@ -69,9 +69,9 @@
                         (match &recent-space ($index (  (count $count) $indexVal  $sizeVal))
                             ; update the count also remove existing recent bin and add updated one
                             (let* (
-                                    ($_ (remove-atom &recent-space ($index (  (count $count) $indexVal  $sizeVal))) )
+                                    ($a (remove-atom &recent-space ($index (  (count $count) $indexVal  $sizeVal))) )
                                     ($update (+ (* $pastCount $bias) (* (- 1 $bias) $count)))
-                                    ($_ (add-atom &recent-space ($index ( (count $update) $indexVal $sizeVal)))))
+                                    ($a (add-atom &recent-space ($index ( (count $update) $indexVal $sizeVal)))))
                                 (mergeBin $tail $bias) 
                             )
                         )

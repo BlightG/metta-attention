@@ -23,7 +23,7 @@
                    (let* 
                         (
                            ($stv (getStv $pattern))
-                           ($value (match &typeSpace ($pattern $_) ($pattern $_)))
+                           ($value (match &typeSpace ($pattern $b ) ($pattern $c )))
                            (() (remove-atom &typeSpace $value))
                         )
                       (if (== $stv %Undefined%)
@@ -55,7 +55,7 @@
             (
                 ($av (getAv $pattern))
                 ($bin (getBin $pattern))
-                ($value (match &typeSpace ($pattern $_) ($pattern $_)))
+                ($value (match &typeSpace ($pattern $b ) ($pattern $c )))
                 (() (remove-atom &typeSpace $value))
               )
             (if (== $av %Undefined%)
@@ -231,7 +231,7 @@
 ;; globalIncomingSetByType a function that takes in an a pattern and retrives
 ;; all links it is an incoming set in
 (= (globalIncomingSetwithoutType $atom)
-    (globalIncomingSetByType $atom $_)
+    (globalIncomingSetByType $atom $b )
 )
 
 ;; remoeTypeSpace a function that removes an atom from the typeSpace

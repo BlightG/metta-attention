@@ -37,8 +37,7 @@
     let*
     (
       ($groupSize (GroupSize))
-      ($impo_int (trunc-math $impo)) ; Ensure $impo is treated as an integer
-      ($firstCondition (< $impo_int 0))
+ ($impo_int (trunc' $impo)) ; Ensure $impo is treated as an integer      ($firstCondition (< $impo_int 0))
       ($secondCondition (< $impo_int (* 2 $groupSize)))
     )
     (if $firstCondition
@@ -47,10 +46,10 @@
         $impo_int
         (let*
           (
-            ($imp (trunc-math (/ (- $impo_int $groupSize) $groupSize)))
+            ($imp (trunc' (/ (- $impo_int $groupSize) $groupSize)))
             ($i (findGroup $imp 0 0))
             ($num (- $i 1))
-            ($temp (ceil-math (/ $impo_int (pow-math 2 (- $i 1)))))
+            ($temp (ceil' (/ $impo_int (pow-math 2 (- $i 1)))))
             ($ad (- $groupSize $temp))
             ($bin (- (* $i $groupSize) $ad))
           )
@@ -148,27 +147,27 @@
 (= (getMaxSTI $avg) 
    (let $recentVal (RecentVal)
     (if $avg
-      (match $recentVal (recent_max $_) $_)
-      (match $recentVal (value_max $_) $_)
+      (match $recentVal (recent_max $x) $x)
+      (match $recentVal (value_max $x) $x)
       )
    )
 )
 
 (: getMaxSTI (-> Number))
-(= (getMaxSTI) (let $recentVal (RecentVal) (match $recentVal (recent_max $_) $_)))
+(= (getMaxSTI) (let $recentVal (RecentVal) (match $recentVal (recent_max $x) $x)))
 
 (: getMinSTI (-> Bool Number))
 (= (getMinSTI $avg)
    (let $recentVal (RecentVal)
     (if $avg
-      (match $recentVal (recent_min $_) $_)
-      (match $recentVal (value_min $_) $_)
+      (match $recentVal (recent_min $x) $x)
+      (match $recentVal (value_min $x) $x)
       )
    )
 )
 
 (: getMinSTI (-> Number))
-(= (getMinSTI) (let $recentVal (RecentVal) (match $recentVal (recent_min $_) $_)))
+(= (getMinSTI) (let $recentVal (RecentVal) (match $recentVal (recent_min $x) $x)))
 
 ; (: getMaxSTI (-> Bool Number))
 ; (= (getMaxSTI $avg) 
@@ -212,7 +211,7 @@
            ($normaliser (- $maxSTI $minSTI))
            ($diff (- $sti $minSTI))
           
-           ($value (if (== $normaliser 0)
+           ($value (if (is $normaliser 0)
                       0.0
                       (/ $diff $normaliser)))
             ($minim  (min-atom ($value 1.0)))

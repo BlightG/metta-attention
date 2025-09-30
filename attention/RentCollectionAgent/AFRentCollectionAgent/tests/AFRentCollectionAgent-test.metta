@@ -5,7 +5,6 @@
 !(import! &self metta-attention:attention:RentCollectionAgent:RentCollectionBaseAgent:RentCollectionBaseAgent)
 !(import! &self metta-attention:attention-bank:attention-value:getter-and-setter)
 !(import! &self metta-attention:attention-bank:utilities:helper-functions)
-!(import! &self metta-attention:attention-bank:bank:atom-bins:atombins)
 !(import! &self metta-attention:attention-bank:bank:importance-index:importance-index)
 !(import! &self metta-attention:attention:RentCollectionAgent:AFRentCollectionAgent:AFRentCollectionAgent)
 !(stimulate b 3000.0)
@@ -34,6 +33,3 @@
 !(assertEqual (approxEqual (getSti c) 29998.7 1.6) True)
 !(assertEqual (approxEqual (getSti d) 2898.71 1.6) True)
 !(assertEqual (approxEqual (getSti (Hebbianlink a b)) 353.725 1.6) True)
-
-
-

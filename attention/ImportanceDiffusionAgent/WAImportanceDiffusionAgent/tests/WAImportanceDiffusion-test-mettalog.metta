@@ -22,9 +22,6 @@
 !(stimulate target3 400)
 !(stimulate target4 300)
 
-
-
-
 !(setStv (HEBBIAN_LINK source target1) (0 1))
 !(setStv (HEBBIAN_LINK source target2) (0 1))
 !(setStv (ASYMMETRIC_HEBBIAN_LINK source target3) (0 1))
@@ -36,13 +33,12 @@
 !(setStv (ASYMMETRIC_HEBBIAN_LINK target2 target1) (0 1))
 
 ; ;############################################################################
-
-!(WAImportanceDiffusionAgent-Run (TypeSpace))
-!(WAImportanceDiffusionAgent-Run (TypeSpace))
-!(WAImportanceDiffusionAgent-Run (TypeSpace))
-
+!(
+    (WAImportanceDiffusionAgent-Run (TypeSpace))
+    (WAImportanceDiffusionAgent-Run (TypeSpace))
+    (WAImportanceDiffusionAgent-Run (TypeSpace))
+)
 ;############################################################################
-
 
 !(assertEqual (< (getSti target4) 6000.0) True)
 !(assertEqual (> (getSti (INHERITANCE_LINK source target4)) 0.0) True)

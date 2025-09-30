@@ -1,24 +1,23 @@
-
 ;; This function will return the diffusion source vector (atoms that can be diffused) from AF
 ;; Parameters $space: The space that will be used to find the diffusion source vector
 ;; Return : The diffusion source vector
 
-(: diffusionSourceVector (-> Grounded Atom))
-(= (diffusionSourceVector $space)
-    (let*
-        (
-            ($atoms (collapse (let $temp (match $space $x $x)
-                (if (== (get-metatype $temp) Expression)
-                    (if (== (car-atom $temp) HEBBIAN_LINK)
-                        (empty)
-                        $temp
-                    )
+; (: diffusionSourceVector (-> Grounded Atom))
+(= (diffusionSourceVector $list)
+    (collapse 
+        (let
+            $temp 
+            (superpose $list)
+            (if (== (get-metatype $temp) Expression)
+                (if (== (car-atom $temp) HEBBIAN_LINK)
+                    (empty)
                     $temp
-                    
-                ))))
+                )
+                $temp
+                
+            )
         )
-        $atoms
-    )
+    ) 
 )
 
 
@@ -36,72 +35,13 @@
 ;;            $space2: The space that will be used to find incomingSets
 ;; Return : The diffusion get called
 
-(: spreadImportance (-> Grounded Grounded Empty))
-(= (spreadImportance $space $space2)
-    (let*
-        (
-         ($diffusionSourceVector (diffusionSourceVector $space))
-         ($result (collapse (diffuseAtom (superpose $diffusionSourceVector) $space2 AF)))
-         ($trades (collapse (tradeList $result)))
-         (($atom $finalSti) (superpose $trades))
-        )
-        
-        (setSti $atom $finalSti)
-        
-    )
-)
-
-;; This function takes all possible diffusions and tallies the final sti value 
-;; for each atom affected by the agent
-;; Parameters:
-;;      $result: an account for all sti trades callculated by the agent
-;; Return:
-;;      (non-detrministic) an Expression atom (($atom $stiValue)....) listing all atoms and new stivalues
-(: tradeList (-> Expression Expression))
-(= (tradeList $result)
-    (let*
-        (
-            ($diffusingAtoms (collapse 
-                (let ($atom $atomToReceive $stiGiven)
-                    (superpose $result)
-                    $atom 
-                )
-            ))
-            ($recivingAtoms (collapse 
-                (let ($atom $atomToReceive $stiGiven)
-                    (superpose $result)
-                    $atomToReceive 
-                )
-            ))
-            ($combindedAtoms (union-atom $diffusingAtoms $recivingAtoms))
-            ($sources (unique-atom $combindedAtoms))
-            ($source (superpose $sources))
-            ($sourceSti (collapse (filterTrade $result $source)))
-            ($trade (foldl-atom $sourceSti 0 $acc $x (+ $acc $x)))
-            ($newTrade (+ (getSti $source) $trade))
-        )
-        ($source $newTrade)
-    )
-)
-
-;; This function filters returns sti transfers for a given atom and negates all values 
-;; where it is giving sti
-;; Parameters:
-;;      $result: list of all trades
-;;      $source: atom in consideration
-;; Result: (non - deterministic)
-;;      Number value of sti trade of an atom
-(: filterTrade (-> Expression Atom Number))
-(= (filterTrade $result $source)
-    (let ($atom $atomToReceive $stiGiven)
-        (superpose $result)
-        (if (== $atom $source)
-            (* -1 $stiGiven)
-            (if (== $atomToReceive $source)
-                $stiGiven
-                (empty)
+; (: spreadImportance (-> Grounded Grounded Empty))
+(= (spreadImportance $space)
+    (let $diffusionSourceVector (diffusionSourceVector (getAfAtoms))
+        (let ($atom $atomToReceive $stiGiven)
+            (diffuseAtom (superpose $diffusionSourceVector) $space AF)
+                (tradeSti $atom $atomToReceive $stiGiven)
             )
-        )
     )
 )
 
@@ -110,7 +50,7 @@
 ;;            $space2: The space that will be used to find incomingSets
 ;; Return : The spreadImportance function is called
 
-(: AFImportanceDiffusionAgent-Run (-> Grounded Grounded Empty))
-(= (AFImportanceDiffusionAgent-Run $space $space2)
-    (spreadImportance $space $space2)
+; (: AFImportanceDiffusionAgent-Run (-> Grounded Grounded Empty))
+(= (AFImportanceDiffusionAgent-Run $space)
+    (spreadImportance $space)
 )

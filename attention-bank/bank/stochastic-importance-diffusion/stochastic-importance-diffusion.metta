@@ -24,7 +24,7 @@
 (= (updateBin $atom)
     (let* (
             ($index (importanceBin (getSti $atom)))
-            ($it (collapse (match &atomBinInfo ($index $_) $index)))
+            ($it (collapse (match &atomBinInfo ($index $a) $index)))
             ($firstTime   (timeTime))
           )
         (if (== $it ($index))
@@ -74,7 +74,7 @@
 
 (:calcElapsedTime (-> Number Number))
 (= (calcElapsedTime $index)
-    (if (== (collapse (match &atomBinInfo ($index $_) $index)) ($index))
+    (if (== (collapse (match &atomBinInfo ($index $a) $index)) ($index))
         (let (($cnt $cntVal) ($idx $idxVal) ($size $sizeVal) ($updateRate $updateRateVal) ($lastUpdate $lastUpdateVal)) 
                 (match &atomBinInfo ($index $info) $info)
                 (if (== $updateRateVal 0)

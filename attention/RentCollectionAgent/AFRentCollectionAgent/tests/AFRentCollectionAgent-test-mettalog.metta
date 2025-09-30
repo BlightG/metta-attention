@@ -24,7 +24,6 @@
 
 ;Sleep for the computed time to match C++ behavior
 ! ((py-atom time.sleep) (/ 1.0 5.0))
-
 !(AFRentCollectionAgent-run)
 
 ;the sti value of the atoms must be lower and Python’s time.time() is only precise up to ~1e-6 or less,
