@@ -1,5 +1,5 @@
+; This is custom to AFImportancediffusion needs
 
-;This is custom to AFImportancediffusion needs
 (: getTargetNeighborsAFI (-> Atom Atom Atom Bool Atom))
 (= (getTargetNeighborsAFI $iset $atom $type $match-subtype)
     (if (== $type UNORDERED_LINK)
@@ -22,16 +22,19 @@
     )
 )
 
+(: getTargetNeighbors (-> Atom Atom Atom List))
 (= (getTargetNeighbors $target $type $space)
-    (collapse (match $space 
-        (($type $x $target) $value) 
-        (filterTarget ($type $x $target))
-    ))
+    (collapse
+        (match $space 
+            (($type $x $target) $value) 
+            (filterTarget ($type $x $target) $target)
+        )
+    )
 )
 
-(= (filterTarget $link)
-    (let ($type $x $target)
-        $link
+(: filterTarget (-> Atom Atom Atom))
+(= (filterTarget $link $target)
+    (let ($type $x $t) $link
         (if (or (== $type UNORDERED_LINK) (== $x $target))
             (empty)
             $x

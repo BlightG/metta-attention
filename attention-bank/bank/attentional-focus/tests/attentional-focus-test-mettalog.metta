@@ -1,13 +1,14 @@
 !(register-module! ../../../../../metta-attention)
-!(register-module! ../../../../attention-bank)
 !(import! &self metta-attention:attention:AttentionParam)
-!(import! &self attention-bank:utilities:helper-functions)
-!(import! &self attention-bank:attention-value:getter-and-setter)
-!(import! &self attention-bank:bank:atom-bins:atombins)
-!(import! &self attention-bank:bank:attention-bank)
-!(import! &self attention-bank:bank/attentional-focus:attentional-focus)
-!(import! &self attention-bank:bank/importance-index:importance-index)
+!(import! &self metta-attention:attention-bank:utilities/helper-functions)
+!(import! &self metta-attention:attention-bank:attention-value/getter-and-setter)
+!(import! &self metta-attention:attention-bank:bank/attention-bank)
+!(import! &self metta-attention:attention-bank:attention-value/get-min-max)
+!(import! &self metta-attention:attention-bank:bank/attentional-focus/attentional-focus)
+!(import! &self metta-attention:attention-bank:bank/importance-index/importance-index)
+!(import! &self metta-attention:attention-bank:utilities/recentVal)
 
+; ##################### Prep: inserting Atoms in attentional focus ####################
 ; Test attentional focus
 !(setAv a (1.0 0.0 0.0))
 !(setAv d (7.0 4.0 0.0))
@@ -18,40 +19,33 @@
 !(setAv D (25.0 125.0 225.0))
 !(setAv F (70.0 100.0 200.0))
 !(getAttentionParam MAX_AF_SIZE)
-; The test cases were added with setting AV for links but this might not be needed in reality because AVs may not be set for links/expressions
+; The test cases included AVs for links as well
 !(setAv (EvaluationLink a b) (100.0 100.0 100.0))
 !(setAv (Hebbianlink (Hebbianlink Cat Human) Animal) (200.0 250.0 280.0))
 !(updateAttentionParam MAX_AF_SIZE 8)
+
 ; ################### Testing #################################
 
-; Test case 01: Testing attentionalFocusSize asserting it returns correct number of atom in focus
+; Test case 01: incoming-set search restricted to AF atoms
 !(assertEqual (getIncomingSetByType Animal Hebbianlink) ((Hebbianlink (Hebbianlink Cat Human) Animal)))
 
-; ; ; Test case 02: Testing atomIsInAF asserting it returns True for a given atom in AF
-
+; Test case 02: isAtomInAf returns True for an atom that is in AF
 !(assertEqual (isAtomInAf C) True)
 
-; ; Testing same case for Link
-
+; Test case 02b: links also considered in AF via getAfAtoms
 !(assertEqual (isAtomInAf (EvaluationLink a b)) True)
 !(assertEqual (isAtomInAf (Hebbianlink (Hebbianlink Cat Human) Animal)) True)
 
-
-; Test case 03: Testin atomIsInAF asserting it return False foor a give atom not in AF
-
+; Test case 03: isAtomInAf returns False for an atom not in AF
 !(assertEqual (isAtomInAf Z) False)
 
-; ; Test case 04: Testing getLowestStiAtomInAF returns an atom with lowest Sti
-; !(assertEqual (getLowestStiAtomInAF) c)
-
-
-; ; ; Test case 05: Testing updateAttentionalFocus by adding new atom to attentional focus
-
+; Test case 04: adding a high-importance atom makes it appear in AF
 !(setAv G (300.0 400.0 500.0))
 !(assertEqual (isAtomInAf G) True)
 
+; Verify that the AF set contains the expected atoms (order not guaranteed; subtract to check membership)
 !(let $x 
-    (getAfAtoms) 
+    (getAfAtoms)
     (assertEqual 
         (subtraction 
             (superpose $x) 
@@ -61,7 +55,7 @@
     )
 )
 
-;; Test case 06: Testing updateAttentionalFocus by changing values of saved atom
+; Test case 06: change G to a low STI and ensure AF membership reflects update
 !(setAv G (15.0 25.0 35.0))
 
 !(let $x 
@@ -74,14 +68,9 @@
         (empty)
     )
 )
-; Test case 07: Testing updateAttentionalFocus adding an atom without AV 
 
-; !(assertEqual (updateAttentionalFocus L) False)
-; !(assertEqual (getAtomList) (a d c A B C D F (EvaluationLink a b) (Hebbianlink (Hebbianlink Cat Human) Animal) G))
-
-; ; Test case 09: Testing getRandomAtomNotInAF assure that only one atom is returned
+; Test case 07: getRandomAtomNotInAF should return an atom that is not in AF
 !(let $a (collapse (getRandomAtomNotInAF)) (assertEqual (isAtomInAf $a) False))
 
-; Test case 10: Testing getAfMaxSTI
-
+; Test case 08: get maximum STI among AF atoms
 !(let $x (getAfAtoms) (assertEqual (getAllMaxSTI $x) 200))

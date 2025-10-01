@@ -1,100 +1,101 @@
 !(register-module! ../../../../metta-attention)
+
 !(import! &self metta-attention:attention:ForgettingAgent/ForgettingAgent)
+!(bind! &removeSpace (new-space))
+
 !(import! &self metta-attention:attention-bank:utilities/helper-functions)
 !(import! &self metta-attention:attention:AttentionParam)
+!(bind! &attentionParam (new-space))
+
+!(add-atom &attentionParam (AF_SIZE 0.2))
+!(add-atom &attentionParam (MIN_AF_SIZE 500))
+!(add-atom &attentionParam (AFB_DECAY 0.05))
+!(add-atom &attentionParam (AFB_BOTTOM 50.0))
+!(add-atom &attentionParam (MAX_AF_SIZE 1000.0))
+!(add-atom &attentionParam (AFRentFrequency 5.0))
+!(add-atom &attentionParam (FORGET_THRESHOLD 0.05))
+!(add-atom &attentionParam (MAX_SIZE 2))
+!(add-atom &attentionParam (ACC_DIV_SIZE 1))
+!(add-atom &attentionParam (HEBBIAN_MAX_ALLOCATION_PERCENTAGE 0.05))
+!(add-atom &attentionParam (LOCAL_FAR_LINK_RATIO 10.0))
+!(add-atom &attentionParam (MAX_LINK_NUM 300.0))
+!(add-atom &attentionParam (MAX_SPREAD_PERCENTAGE 0.4))
+!(add-atom &attentionParam (DIFFUSION_TOURNAMENT_SIZE 5.0))
+!(add-atom &attentionParam (SPREAD_HEBBIAN_ONLY 0.0))
+!(add-atom &attentionParam (StartingAtomStiRent 1.0))
+!(add-atom &attentionParam (StartingAtomLtiRent 1.0))
+!(add-atom &attentionParam (TARGET_LTI_FUNDS_BUFFER 1.0e+04))
+!(add-atom &attentionParam (RENT_TOURNAMENT_SIZE 5.0))
+!(add-atom &attentionParam (TC_DECAY_RATE 0.1))
+!(add-atom &attentionParam (DEFAULT_K 800))
+!(add-atom &attentionParam (SPREADING_FILTER (MemberLink (Type "MemberLink"))))
+!(add-atom &attentionParam (STARTING_FUNDS_STI 100000))
+!(add-atom &attentionParam (FUNDS_STI 100000))
+!(add-atom &attentionParam (STARTING_FUNDS_LTI 100000))
+!(add-atom &attentionParam (FUNDS_LTI 100000))
+!(add-atom &attentionParam (STI_FUNDS_BUFFER 10000))
+!(add-atom &attentionParam (LTI_FUNDS_BUFFER 10000))
+!(add-atom &attentionParam (TARGET_STI 10000))
+!(add-atom &attentionParam (TARGET_LTI 10000))
+!(add-atom &attentionParam (STI_ATOM_WAGE 10))
+!(add-atom &attentionParam (LTI_ATOM_WAGE 10))
+
 !(import! &self metta-attention:attention-bank:attention-value/getter-and-setter)
+!(bind! &typeSpace (new-space))
 !(import! &self metta-attention:attention-bank:bank/attention-bank)
-!(import! &self metta-attention:attention-bank:bank/attentional-focus/attentional-focus)
+!(bind! &space (new-space))
 !(import! &self metta-attention:attention-bank:bank/importance-index/importance-index)
 
 !(updateAttentionParam FORGET_THRESHOLD 5)
-; STImualte 0.25 translated toLTI5
 
-!(STImulate a 1)
-!(STImulate b 0.4)
-!(STImulate c 0.2)
-!(STImulate d 0.15)
-!(STImulate e 0.41)
-!(STImulate f 0.62)
-!(STImulate g 0.13)
-!(STImulate h 0.02)
-!(STImulate i 0.43)
-!(STImulate j 0.52)
-!(STImulate k 0.13)
-!(STImulate l 0.02)
-!(STImulate A 1)
-!(STImulate B 0.4)
-!(STImulate C 0.2)
-!(STImulate D 0.15)
-!(STImulate E 0.41)
-!(STImulate F 0.62)
-!(STImulate G 0.13)
-!(STImulate H 0.02)
-!(STImulate I 0.43)
-!(STImulate J 0.52)
-!(STImulate K 0.13)
-!(STImulate L 0.02)
-!(STImulate M 0.1)
-!(STImulate N 0.1)
+;; stimulate atoms
+!(stimulate a 1)
+!(stimulate b 0.4)
+!(stimulate c 0.2)
+!(stimulate d 0.15)
+!(stimulate e 0.41)
+!(stimulate f 0.62)
+!(stimulate g 0.13)
+!(stimulate h 0.02)
+!(stimulate i 0.43)
+!(stimulate j 0.52)
+!(stimulate k 0.13)
+!(stimulate l 0.02)
+!(stimulate A 1)
+!(stimulate B 0.4)
+!(stimulate C 0.2)
+!(stimulate D 0.15)
+!(stimulate E 0.41)
+!(stimulate F 0.62)
+!(stimulate G 0.13)
+!(stimulate H 0.02)
+!(stimulate I 0.43)
+!(stimulate J 0.52)
+!(stimulate K 0.13)
+!(stimulate L 0.02)
+!(stimulate M 0.1)
+!(stimulate N 0.1)
+!(stimulate O 0.1)
+!(stimulate o 2.1)
 
-!(STImulate O 0.1)
-!(STImulate o 2.1)
 !(setStv p (0.1 0.2))
-
-; only stv, source > 5, target > 5
 !(setStv (ASYMMETRIC_HEBBIAN_LINK a b) (0.5 0.45))
-
-; only stv, source < 5, target < 5
 !(setStv (ASYMMETRIC_HEBBIAN_LINK c d) (0.4 0.45))
-
-; stv & av, lit > 5, source > 5, target > 5
-!(STImulate (ASYMMETRIC_HEBBIAN_LINK e f) 2)
-
-; stv &av, lit > 5, source < 5, target < 5
-!(STImulate (ASYMMETRIC_HEBBIAN_LINK g h) 13)
-
-; stv & av, lit < 5, source > 5, target > 5
-!(STImulate (ASYMMETRIC_HEBBIAN_LINK i j) 0.2)
-
-; stv &av, lit < 5, source < 5, target < 5
-!(STImulate (ASYMMETRIC_HEBBIAN_LINK k l) 0.1)
-
-; only stv, source > 5, target > 5
+!(stimulate (ASYMMETRIC_HEBBIAN_LINK e f) 2)
+!(stimulate (ASYMMETRIC_HEBBIAN_LINK g h) 13)
+!(stimulate (ASYMMETRIC_HEBBIAN_LINK i j) 0.2)
+!(stimulate (ASYMMETRIC_HEBBIAN_LINK k l) 0.1)
 !(setStv (SYMMETRIC_HEBBIAN_LINK A B) (0.5 0.45))
-
-; only stv, source < 5, target < 5
 !(setStv (SYMMETRIC_HEBBIAN_LINK C D) (0.4 0.45))
+!(stimulate (SYMMETRIC_HEBBIAN_LINK E F) 2)
+!(stimulate (SYMMETRIC_HEBBIAN_LINK G H) 13)
+!(stimulate (SYMMETRIC_HEBBIAN_LINK I J) 0.2)
+!(stimulate (SYMMETRIC_HEBBIAN_LINK K L) 0.1)
+!(stimulate (SYMMETRIC_HEBBIAN_LINK M N) 0.2)
 
-; stv & av, lit > 5, source > 5, target > 5
-!(STImulate (SYMMETRIC_HEBBIAN_LINK E F) 2)
+;; Run forgetting agent
+!(forgettingAgent-Run ())
 
-; stv &av, lit > 5, source < 5, target < 5
-!(STImulate (SYMMETRIC_HEBBIAN_LINK G H) 13)
-
-; stv & av, lit < 5, source > 5, target > 5
-!(STImulate (SYMMETRIC_HEBBIAN_LINK I J) 0.2)
-
-; stv &av, lit < 5, source < 5, target < 5
-!(STImulate (SYMMETRIC_HEBBIAN_LINK K L) 0.1)
-
-; stv &av, lit < 5, source < 5, target < 5, linkLTIabove source & target lti
-!(STImulate (SYMMETRIC_HEBBIAN_LINK M N) 0.2)
-
-!(assertEqual (getAttentionParam FUNDS_STI) 99174.80000000002)
-
-
-!(forgettingAgent-Run (TypeSpace))
-
-
-!(let*
-    (
-        ($rmvspace (getAtomsInRemoveSpace))	
-        ($typspace (getAtomsInTypeSpace)) 
-        ($assertTypespace (assertEqual (intersection-atom $typspace $rmvspace) ()))
-    )
-    ()
-) 
-
-!(assertEqual (getAttentionParam FUNDS_STI) 99468.40000000002)
-
+;; Assertions
 !(assertEqual (let $a (getAtomsInRemoveSpace) (size-atom $a)) 16)
+!(assertEqual (getAttentionParam FUNDS_STI) 99468.40000000002)

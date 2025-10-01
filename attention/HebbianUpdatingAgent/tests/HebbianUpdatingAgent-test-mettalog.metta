@@ -1,15 +1,14 @@
 !(register-module! ../../../../metta-attention)
 !(import! &self metta-attention:attention-bank:utilities/helper-functions)
 !(import! &self metta-attention:attention-bank:attention-value/getter-and-setter)
-!(import! &self metta-attention:attention-bank:bank/atom-bins/atombins)
 !(import! &self metta-attention:attention-bank:bank/attention-bank)
 !(import! &self metta-attention:attention-bank:bank/attentional-focus/attentional-focus)
 !(import! &self metta-attention:attention-bank:bank/importance-index/importance-index)
 !(import! &self metta-attention:attention-bank:utilities/recentVal)
 !(import! &self metta-attention:attention:HebbianUpdatingAgent/HebbianUpdatingAgent)
-!(import! &self metta-attention:attention-bank:utilities/recentVal)
 !(import! &self metta-attention:attention:AttentionParam)
 
+;################ Prep: giving atoms mean and confidence ####################
 !(setStv source (0.1 0.9))
 !(setStv target1 (0.1 0.9))
 !(setStv target2 (0.1 0.9))
@@ -52,7 +51,6 @@
 
 !(assertEqual 
   (if (>= (getMean (ASYMMETRIC_HEBBIAN_LINK source target3)) 0.010940548780487804)
-           
       True
       False)
   True)

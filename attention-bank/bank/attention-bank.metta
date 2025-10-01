@@ -1,12 +1,6 @@
 !(bind! &space (new-space))
 
-; Function to calculate STI wage
-; Description: Calculates the adjustment factor for Short-Term Importance (STI)
-;    - Compute the normalized difference between current funds and the target.
-;    - Limit the adjustment factor between -1.0 and 1.0.
-;    - Return the adjusted STI wage.
-; Parameters: None.
-; Returns: The adjusted STI wage value.
+;########################## STI Wage Calculation ###########################
 (: calculateSTIWage (-> Number))
 (= (calculateSTIWage)
    (let* (
@@ -24,14 +18,7 @@
    )
 )
 
-; Function to calculate LTI wage
-; Description:
-;   Calculates the adjustment factor for Long-Term Importance (LTI)
-;    - Compute the normalized difference between current funds and the target.
-;    - Limit the adjustment factor between -1.0 and 1.0.
-;    - Return the adjusted LTI wage.
-; Parameters: None.
-; Returns: The adjusted LTI wage value
+;########################## LTI Wage Calculation ###########################
 (: calculateLTIWage (-> Number))
 (= (calculateLTIWage)
    (let* (
@@ -49,16 +36,7 @@
    )
 )
 
-; Function to stimulate an atom with a given stimulus
-; Description:
-;    Adjusts the AttentionValue (STI, LTI, VLTI) of an atom based on:
-;    - Calculate the new STI and LTI values using the wages and stimulus.
-;    - Calculate the changes in STI and LTI funds.
-;    - Call attentionValueChanged to apply the updates.
-;Parameters:
-;     $pattern: The atom receiving the stimulus.
-;     $stimulus: The factor by which STI and LTI will be adjusted.
-;Returns: Nothing (updates the atom and related values)
+;########################## Stimulate Atom ###########################
 (: stimulate (-> Atom Number empty))
 (= (stimulate $pattern $stimulus)
    (let* (
@@ -72,35 +50,20 @@
            ($new-av ($new-sti $new-lti $vlti))
            ($res (setAv $pattern $new-av))
          )
-		 ("Updated")
+         "Updated"
    )
 )
 
-; Function to handle attention value changes and update global funds
-; Description:
-;    Updates the AttentionValue of an atom and adjusts the global STI and LTI funds
-;    -set the new attention value of the atom 
-;    - Remove the current FUNDS_STI and FUNDS_LTI values from the AtomSpace.
-;    - Add the updated FUNDS_STI and FUNDS_LTI values to the AtomSpace.
-;    - Inserts the atom to the attentional focus if possible
-;    - Updates the Bin placement of the atom
-;Parameters:
-;     $pattern: The atom whose AttentionValue is being updated.
-;     $newSTIFund: The new STI fund value.
-;     $newLTIFund: The new LTI fund value.
-;     $newAv: The new AttentionValue to be set for the atom.
-;Returns: The result of updating the atomBin.
-
-
+;########################## Handle Attention Value Changes #################
 (: attentionValueChanged (-> Atom Number Number empty))
 (= (attentionValueChanged $pattern $newSTIFund $newLTIFund)
    (let* (
-         ($one (updateAttentionParam FUNDS_STI $newSTIFund))
-         ($two (updateAttentionParam FUNDS_LTI $newLTIFund))
-         ($atombin (AtomBin))
-         ($r (update $atombin))
-         ($three (updateAttentionalFocus $pattern True))
-        )
-        $r
-    )
+           ($stiUpdated (updateAttentionParam FUNDS_STI $newSTIFund))
+           ($ltiUpdated (updateAttentionParam FUNDS_LTI $newLTIFund))
+           ($atombin (AtomBin))
+           ($binUpdate (update $atombin))
+           ($focusUpdate (updateAttentionalFocus $pattern True))
+         )
+         $binUpdate
+   )
 )
